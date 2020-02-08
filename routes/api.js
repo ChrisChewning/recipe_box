@@ -3,7 +3,7 @@ const router = express.Router(); //router object you mount methods to.
 const User = require('../models/users'); //require User model so you can post. 
 
 //get list of recipes from db
-router.get('/recipes', function(req, res){
+router.get('/recipes', function(req, res, next){
     res.send({type: 'GET'})
 });
 
@@ -12,11 +12,12 @@ router.get('/recipes', function(req, res){
 //POST ROUTES
 
 //add a user to db.
-router.post('/users', function(req, res){
+router.post('/users', function(req, res, next){
     User.create(req.body).then(function(user){ //Promise
         res.send(user)
-    });
-    }); 
+    }).catch(next); //i'm done here, go on to the next piece of middleware
+    
+}); 
     
     //new instance of User object and save it to db. 
     //receive a post req with JSON body. That'll be based off the schema. .create is a mongoose method. It calls that on the model
@@ -25,7 +26,7 @@ router.post('/users', function(req, res){
 
 
 //add a recipe to db.
-router.post('/recipes', function(req, res){
+router.post('/recipes', function(req, res, next){
     console.log(req.body);
     res.send({
         type: 'POST',
@@ -35,15 +36,17 @@ router.post('/recipes', function(req, res){
 });
 
 //update a recipe in db. 
-router.put('/recipes/:id', function(req, res){
+router.put('/recipes/:id', function(req, res, next){
     res.send({type: 'PUT'})
 });
 
-//delete a recipe in db. 
-router.delete('/recipes/:id', function(req, res){
-    res.send({type: 'GET'})
+//delete a user in db. 
+router.delete('/users/:id', function(req, res, next){
+    User.findByIdAndRemove({_id: req.params.id}).then(function(user){
+        res.send(user);
+    });
 });
 
-
+//findbyidandremove is a mongoose method.
 
 module.exports = router; 
