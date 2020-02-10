@@ -8,6 +8,17 @@ router.get('/recipes', function(req, res, next){
 });
 
 
+//RETURN ALL USERS
+router.get('/users', function(req, res, next){
+    User.find({}).then(function(users){
+        res.send(ninjas);
+    })
+});
+
+//RETURN SPECIIC USER
+router.get('/users/:id', function(req, res, next){
+    res.send({type: 'GET'})
+});
 
 //POST ROUTES
 
@@ -38,6 +49,15 @@ router.post('/recipes', function(req, res, next){
 //update a recipe in db. 
 router.put('/recipes/:id', function(req, res, next){
     res.send({type: 'PUT'})
+});
+
+//update a user in db. 2nd param is in json body. 
+router.put('/users/:id', function(req, res, next){
+    User.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(){
+        User.findOne({_id: req.params.id}).then(function(user){
+            res.send(user);
+        })        
+    })
 });
 
 //delete a user in db. 
